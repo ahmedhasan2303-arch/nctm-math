@@ -1,0 +1,267 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة محاكاة المعلمين - معايير NCTM</title>
+    <style>
+        body { background-color: #0f172a; color: #ffffff; font-family: system-ui, -apple-system, sans-serif; padding: 15px; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; box-sizing: border-box; }
+        .container { width: 100%; max-width: 450px; background-color: #1e293b; border: 1px solid #334155; border-radius: 24px; overflow: hidden; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3); display: flex; flex-direction: column; min-height: 550px; }
+        .header { background-color: #1e293b; padding: 15px; border-bottom: 1px solid #334155; }
+        .header h1 { margin: 0; font-size: 14px; color: #38bdf8; }
+        .header p { margin: 3px 0 0 0; font-size: 10px; color: #94a3b8; }
+        .content { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; gap: 15px; }
+        .card { background-color: #0f172a; border: 1px solid rgba(51, 65, 85, 0.5); padding: 12px; border-radius: 16px; font-size: 12px; line-height: 1.6; color: #e2e8f0; }
+        .card-title { font-weight: bold; color: #fbbf24; font-size: 11px; margin-bottom: 4px; }
+        .option-btn { width: 100%; text-align: right; padding: 12px; border-radius: 12px; font-size: 12px; line-height: 1.5; border: 1px solid #334155; background-color: rgba(30, 41, 59, 0.5); color: #cbd5e1; cursor: pointer; transition: all 0.2s; display: block; margin-bottom: 8px; box-sizing: border-box; }
+        .option-btn:hover { background-color: #334155; }
+        .option-btn:disabled { cursor: not-allowed; }
+        .correct-selected { background-color: rgba(6, 78, 59, 0.4) !important; border-color: #10b981 !important; color: #a7f3d0 !important; font-weight: 500; }
+        .wrong-selected { background-color: rgba(153, 27, 27, 0.4) !important; border-color: #ef4444 !important; color: #fca5a5 !important; font-weight: 500; }
+        .muted-option { opacity: 0.2; border-color: #1e293b; }
+        .feedback-box { padding: 12px; border-radius: 12px; border: 1px solid transparent; font-size: 12px; line-height: 1.6; margin-top: 10px; }
+        .feedback-correct { background-color: rgba(6, 78, 59, 0.2); border-color: rgba(16, 185, 129, 0.3); color: #a7f3d0; }
+        .feedback-wrong { background-color: rgba(153, 27, 27, 0.2); border-color: rgba(239, 68, 68, 0.3); color: #fca5a5; }
+        .hint-box { background-color: #0f172a; padding: 10px; border-radius: 8px; border: 1px solid rgba(245, 158, 11, 0.2); color: #cbd5e1; font-size: 11px; margin-top: 8px; }
+        .input-group { background-color: rgba(0,0,0,0.2); padding: 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); margin-top: 8px; }
+        .input-label { font-weight: bold; color: #fbbf24; font-size: 11px; margin-bottom: 6px; }
+        .text-input { width: 100%; background-color: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 8px; font-size: 12px; color: #ffffff; box-sizing: border-box; outline: none; }
+        .text-input:focus { border-color: #fbbf24; }
+        .action-btn { width: 100%; border: none; padding: 8px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; margin-top: 6px; background-color: #d97706; color: #ffffff; }
+        .next-btn { width: 100%; border: none; padding: 14px; border-radius: 12px; font-size: 12px; font-weight: bold; cursor: pointer; background-color: #059669; color: #ffffff; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .footer { padding: 12px; background-color: #0f172a; border-top: 1px solid #334155; text-align: center; }
+        .lock-text { font-size: 10px; color: #64748b; }
+        .start-screen { padding: 20px; text-align: center; display: flex; flex-direction: column; gap: 15px; justify-content: center; height: 100%; box-sizing: border-box; }
+        .start-title { font-size: 14px; font-weight: bold; color: #38bdf8; line-height: 1.6; }
+        .start-sub { font-size: 11px; color: #94a3b8; margin: 0; }
+        .start-btn { width: 100%; background-color: #2563eb; color: white; border: none; padding: 12px; border-radius: 12px; font-size: 12px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+        .start-btn:hover { background-color: #1d4ed8; }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="startScreen" class="start-screen">
+            <div>
+                <h2 class="start-title">مرحباً عزيزي المتدرب في برنامج المحاكاة القائم على ممارسات NCTM للتدريس الفعال</h2>
+                <p class="start-sub">الباحث: أحمد حسن</p>
+            </div>
+            <hr style="border-color: #334155; margin: 5px 0;">
+            <div style="text-align: right;">
+                <input type="text" id="trainerNameInput" placeholder="اكتب اسم المتدرب الثلاثي..." class="text-input" style="text-align: center; padding: 12px;">
+                <button type="button" id="startAppBtn" class="start-btn" style="margin-top: 12px;">دخول ومواجهة المواقف ←</button>
+            </div>
+        </div>
+
+        <div id="mainAppScreen" class="hidden" style="display: flex; flex-direction: column; flex-grow: 1;">
+            <div class="header">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h1 id="scenarioTitle">📊 عنوان الموقف</h1>
+                        <p id="trainerNameDisplay">المستجيب الحالي: </p>
+                    </div>
+                    <span id="progressText" style="font-size: 11px; color: #94a3b8; font-family: monospace;">موقف 1 / 3</span>
+                </div>
+            </div>
+
+            <div class="content">
+                <div class="card">
+                    <div class="card-title">الملاحظة الصفية المرصودة:</div>
+                    <div id="scenarioDescription">نص الموقف الملاحظ هنا...</div>
+                </div>
+
+                <div>
+                    <p style="font-size: 11px; font-weight: bold; color: #94a3b8; margin: 0 0 8px 0;">اختر قرارك التدريسي الفوري (الاختيار نهائي):</p>
+                    <div id="optionsContainer"></div>
+                </div>
+
+                <div id="feedbackContainer" class="hidden"></div>
+            </div>
+
+            <div class="footer" id="footerArea">
+                <div id="lockMessage" class="lock-text">🔒 بمجرد نقر أحد القرارات يتم تجميد بقية الخيارات لمنع التخمين العشوائي.</div>
+                <button id="nextBtn" class="next-btn hidden">تأكيد والانتقال للموقف التدريسي التالي ←</button>
+            </div>
+        </div>
+
+        <div id="finishScreen" class="start-screen hidden">
+            <div style="width: 50px; height: 50px; background-color: rgba(16, 185, 129, 0.2); color: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 24px; font-weight: bold;">✓</div>
+            <h2 id="finishTitle" style="font-size: 16px; color: #10b981; margin: 10px 0 0 0;">شكراً لك!</h2>
+            <p style="font-size: 12px; color: #94a3b8; margin: 5px 0 0 0;">تم إرسال إجاباتك بنجاح ومباشرة إلى بريد الباحث الإلكتروني.</p>
+        </div>
+    </div>
+
+    <script>
+        // تم دمج رابط Formspree الخاص بك بنجاح هنا ✅
+        const FORMSPREE_URL = "https://formspree.io/f/xdavpkpv";
+
+        const SCENARIOS = [
+            {
+                title: "الموقف الأول: الانتقال من النمط الملموس إلى الرموز",
+                description: "الطلاب يستخرجون الحد التالي في النمط بسهولة، لكنهم يعجزون تماماً عن ربط الرموز بالنمط الملموس ويتلعثمون عند كتابة المعادلة الجبرية.",
+                options: [
+                    { id: "A", text: "القرار (أ): أطلب منهم حفظ قانون الدلائل الجبرية وتكرار كتابة المعادلة خمس مرات لترسخ الرموز في أذهانهم.", isCorrect: false, reply: "👤 الطالب: يا أستاذ، أنا حفظت شكل المعادلة، لكني ما زلت متلعثماً ولا أعرف ماذا تعني هذه الحروف في الأشكال الملموسة أمامنا! كيف نربط الحروف بالقطع؟", hint: "💡 مقترح للمتدرب: الحفظ الآلي والتكرار لا يبني مفاهيم الربط. يُنصح بإعادة توجيه الطالب للتفكير في العلاقة بين الأجزاء الثابتة والأجزاء المتغيرة داخل النموذج الملموس ومقارنتها بالرموز.", sub: "❓ سؤال توجيهي إضافي: كيف ستشرح للطالب دلالة الرموز بصرياً بدلاً من الحفظ الجاف؟" },
+                    { id: "B", text: "القرار (ب): أقوم ببناء جدول قيم يربط عدد الأشكال بالرموز، وأطلب منهم تلوين الأجزاء المتغيرة في النمط الملموس لمطابقتها بالمعادلة.", isCorrect: true, reply: "🎉 الطالب (بفهم ورضا): رائع جداً يا أستاذ! الآن فهمت تماماً؛ الجدول والرسم الملون جعلاني أرى كيف يتحول الشكل الملموس إلى رموز رياضية بسهولة!" },
+                    { id: "C", text: "القرار (ج): أنتقل لشرح الدرس التالي وأفترض أنهم سيفهمون العلاقة تلقائياً مع كثرة حل الواجبات المنزلية.", isCorrect: false, reply: "👤 الطالب: يا أستاذ، لقد دخلنا في درس جديد وأنا ما زلت تائهاً في الدرس السابق ولا أستطيع حل الواجب بمفردي لأنني لا أرى أي رابط بين الرمز والشكل!", hint: "💡 مقترح للمتدرب: تجاهل الفجوة وتأجيلها يفاقم التلعثم المعرفي. يُنصح بتقديم خطة علاجية فورية تدعم ربط التمثيلات المتعددة (البصرية والعدديّة) قبل الانتقال لدرس أحدث.", sub: "❓ سؤال توجيهي إضافي: كيف ستتدارك هذه الفجوة الآن لتنقذ الطالب قبل تراكم المفاهيم عليه؟" }
+                ]
+            },
+            {
+                title: "الموقف الثاني: الانتقال من الوصف اللفظي إلى الرسم البياني",
+                description: "نجح الطلاب في كتابة الوصف اللفظي لمسألة نمو تجاري، لكن عند طلب تحويلها لرسم بياني، وزعوا النقاط عشوائياً دون إدراك لترجمة الكلمات إلى قيم بصرية.",
+                options: [
+                    { id: "A", text: "القرار (أ): أقوم برسم اللوحة البيانية الصحيحة بنفسي على السبورة وأطلب منهم نقلها بدقة في دفاترهم دون نقاش.", isCorrect: false, reply: "👤 الطالب: يا أستاذ، أنا نقلت الرسمة في دفتري بشكل جميل، لكني لو واجهت مسألة لفظية أخرى سأوزع النقاط عشوائياً أيضاً لأنني لم أفهم كيف تحولت الكلمات إلى هذه الخطوط!", hint: "💡 مقترح للمتدرب: قيام المعلم بالحل نيابة عن الطالب يمنعه من بناء النماذج الذهنية. يُنصح باشراك الطلاب في عملية استخراج الأزواج المرتبة من النص وتوطينها معاً على المحاور.", sub: "❓ سؤال توجيهي إضافي: ما الأداة الوسيطة التي ستستخدمها مع الطالب ليتعلم كيف يترجم الكلمات بنفسه؟" },
+                    { id: "B", text: "القرار (ب): أوبخ الطلاب على توزيع النقاط العشوائي وأطلب منهم إعادة المحاولة في المنزل باستخدام المسطرة.", isCorrect: false, reply: "👤 الطالب: يا أستاذ، المسطرة جعلت الخطوط مستقيمة، لكن المشكلة ليست في الخطوط، بل إننا لا نعرف العلاقة الرياضية بين قيم الكلمات ومواقع المحاور البيانية!", hint: "💡 مقترح للمتدرب: الأدوات الهندسية تنظم التنسيق الخارجي فقط ولا تحل الخلل المفاهيمي. يُنصح بإرشاد الطلاب لبناء جدول وسيط يربط المتغير المستقل بالمتغير التابع المستخلص من المسألة اللفظية.", sub: "❓ سؤال توجيهي إضافي: كيف توجه الطلاب لبناء رابط عددي واضح بين النص المكتوب ومحاور الرسم البياني؟" },
+                    { id: "C", text: "القرار (ج): أوجه الطلاب لتحويل الوصف اللفظي إلى 'جدول قيم عددي' أولاً كحلقة وصل، ثم تمثيل نقاط الجدول خطوة بخطوة على المحاور.", isCorrect: true, reply: "🎉 الطالب (بفهم ورضا): أها! الآن اتضحت الصورة يا أستاذ. الجدول جعل الكلمات اللفظية تتحول لأرقام واضحة، ومن الجدول استطعنا رسم المحاور البيانية بدقة وبدون أي عشوائية!" }
+                ]
+            },
+            {
+                title: "الموقف الثالث: التحليل البصري للميل",
+                description: "يظهر أمام الطلاب رسم بياني لدالة خطية صاعدة، وعند سؤالهم عن معنى الميل بصرياً، أجابوا بحفظ القانون الرمزي فقط دون ربطه بالصعود البصري أو التغير في الجدول.",
+                options: [
+                    { id: "A", text: "القرار (أ): أصمم نشاطاً تفاعلياً يقارن بين درج صاعد ودرج مستوٍ، وأربط مقدار الصعود البصري بالتغير العددي في جدول البيانات والمعادلة الرمزية.", isCorrect: true, reply: "🎉 الطالب (بفهم ورضا): يا لها من فكرة مدهشة يا أستاذ! الدرج الصاعد جعلني أدرك بصرياً معنى 'الميل'، وعرفت الآن لماذا تتغير الأرقام في الجدول والمعادلة مع كل خطوة صعود!" },
+                    { id: "B", text: "القرار (ب): أكتفي بإجابتهم اللفظية وأقول لهم 'ممتاز طالما أنكم تحفظون القانون الرمزي فهذا يكفي للاختبار'.", isCorrect: false, reply: "👤 الطالب: يا أستاذ، أنا حفظت القانون وحصلت على الدرجة، لكني عندما أرى رسماً بيانياً في الحياة الواقعية لا أفهم ماذا يمثل هذا الخط الصاعد أو الهابط رياضياً!", hint: "💡 مقترح للمتدرب: الاكتفاء بالرمزية الجافة يعوق النضج الهندسي والرياضي. يُنصح بربط خطوط الميل بمواقف حيوية وتطبيقات فيزيائية أو معمارية يدرك الطالب أبعادها البصرية.", sub: "❓ سؤال توجيهي إضافي: كيف ستغير أسلوبك لتبني لدى الطالب مهارة التحليل البصري الحقيقي المرتبط بالواقع؟" },
+                    { id: "C", text: "القرار (ج): أطلب منهم كتابة قانون الميل الرمزي على السبورة عدة مرات للتأكيد.", isCorrect: false, reply: "👤 الطالب: الرموز واضحة على السبورة يا أستاذ، لكننا ما زلنا عاجزين عن ربط هذه الطروحات والقسمة الجافة بشكل الخط المستقيم المرسوم أمامنا وميله البصري!", hint: "💡 مقترح للمتدرب: تكرار كتابة القوانين المجردة لا يوفر تفسيراً معنوياً للمفهوم. يُنصح بالربط بين ناتج الطرح العمودي والسطر الأفقي داخل المحاور البيانية مباشرة ليرى الطلاب النسبة البصرية للميل.", sub: "❓ سؤال توجيهي إضافي: كيف تجعل الطالب يرى ناتج هذه الطروحات والقسمة متمثلاً داخل الرسم البياني نفسه؟" }
+                ]
+            }
+        ];
+
+        let trainerName = "";
+        let currentIndex = 0;
+        let selectedOption = null;
+        let finalReport = { q1_text: "", q2_text: "", q3_text: "" };
+
+        document.getElementById("startAppBtn").addEventListener("click", () => {
+            const nameInput = document.getElementById("trainerNameInput").value.trim();
+            if (!nameInput) {
+                alert("الرجاء كتابة الاسم الثلاثي للمتدرب للدخول.");
+                return;
+            }
+            trainerName = nameInput;
+            document.getElementById("startScreen").classList.add("hidden");
+            document.getElementById("mainAppScreen").classList.remove("hidden");
+            document.getElementById("trainerNameDisplay").innerText = "المستجيب الحالي: " + trainerName;
+            renderScenario();
+        });
+
+        function renderScenario() {
+            selectedOption = null;
+            const scenario = SCENARIOS[currentIndex];
+            
+            document.getElementById("scenarioTitle").innerText = "📊 " + scenario.title;
+            document.getElementById("progressText").innerText = `موقف ${currentIndex + 1} / ${SCENARIOS.length}`;
+            document.getElementById("scenarioDescription").innerText = scenario.description;
+            
+            document.getElementById("feedbackContainer").classList.add("hidden");
+            document.getElementById("feedbackContainer").innerHTML = "";
+            document.getElementById("nextBtn").classList.add("hidden");
+            document.getElementById("lockMessage").classList.remove("hidden");
+            
+            const optionsContainer = document.getElementById("optionsContainer");
+            optionsContainer.innerHTML = "";
+            
+            scenario.options.forEach(opt => {
+                const btn = document.createElement("button");
+                btn.className = "option-btn";
+                btn.innerText = opt.text;
+                btn.onclick = () => selectOption(opt, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function selectOption(opt, clickedBtn) {
+            if (selectedOption !== null) return;
+            selectedOption = opt;
+            
+            const allButtons = document.querySelectorAll(".option-btn");
+            allButtons.forEach(btn => {
+                btn.disabled = true;
+                if (btn.innerText === opt.text) {
+                    btn.classList.add(opt.isCorrect ? "correct-selected" : "wrong-selected");
+                } else {
+                    btn.classList.add("muted-option");
+                }
+            });
+            
+            document.getElementById("lockMessage").classList.add("hidden");
+            const feedbackBox = document.getElementById("feedbackContainer");
+            feedbackBox.classList.remove("hidden");
+            
+            if (opt.isCorrect) {
+                feedbackBox.innerHTML = `<div class="feedback-box feedback-correct">${opt.reply}</div>`;
+                document.getElementById("nextBtn").classList.remove("hidden");
+            } else {
+                feedbackBox.innerHTML = `
+                    <div class="feedback-box feedback-wrong">${opt.reply}</div>
+                    <div class="hint-box">${opt.hint}</div>
+                    <div class="input-group">
+                        <div class="input-label">${opt.sub}</div>
+                        <input type="text" id="subInputText" placeholder="اكتب تعديلك هنا بناء على المقترح..." class="text-input">
+                        <button type="button" class="action-btn" onclick="submitImprovement()">تقديم التحسين</button>
+                    </div>
+                `;
+            }
+        }
+
+        window.submitImprovement = function() {
+            const txt = document.getElementById("subInputText").value.trim();
+            if (!txt) {
+                alert("الرجاء كتابة التعديل أولاً لتقديمه.");
+                return;
+            }
+            selectedOption.userImprovement = txt;
+            document.getElementById("feedbackContainer").innerHTML = `
+                <div class="feedback-box feedback-wrong" style="margin-bottom:5px;">${selectedOption.reply}</div>
+                <div class="feedback-box feedback-correct" style="border-color: #d97706; background-color: rgba(217,119,6,0.1); color: #f59e0b;">✓ تم رصد مقترح التحسين بنجاح: [${txt}]</div>
+            `;
+            document.getElementById("nextBtn").classList.remove("hidden");
+        }
+
+        document.getElementById("nextBtn").addEventListener("click", () => {
+            const qKeyText = `q${currentIndex + 1}_text`;
+            
+            if (selectedOption.isCorrect) {
+                finalReport[qKeyText] = selectedOption.text + " (إجابة صحيحة مباشرة)";
+            } else {
+                finalReport[qKeyText] = `${selectedOption.text} [تعديل المتدرب: ${selectedOption.userImprovement || ''}]`;
+            }
+            
+            if (currentIndex < SCENARIOS.length - 1) {
+                currentIndex++;
+                renderScenario();
+            } else {
+                sendToFormspree();
+            }
+        });
+
+        function sendToFormspree() {
+            document.getElementById("nextBtn").innerText = "جاري إرسال البيانات للباحث...";
+            document.getElementById("nextBtn").disabled = true;
+
+            const payload = {
+                "اسم المتدرب": trainerName,
+                "الموقف الأول": finalReport.q1_text,
+                "الموقف الثاني": finalReport.q2_text,
+                "الموقف الثالث": finalReport.q3_text
+            };
+
+            fetch(FORMSPREE_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "Accept": "application/json" },
+                body: JSON.stringify(payload)
+            })
+            .then(() => showFinishScreen())
+            .catch(err => {
+                console.error("Error:", err);
+                showFinishScreen(); 
+            });
+        }
+
+        function showFinishScreen() {
+            document.getElementById("mainAppScreen").classList.add("hidden");
+            document.getElementById("finishScreen").classList.remove("hidden");
+            document.getElementById("finishTitle").innerText = `شكراً لك يا أستاذ ${trainerName}!`;
+        }
+    </script>
+</body>
+</html>
